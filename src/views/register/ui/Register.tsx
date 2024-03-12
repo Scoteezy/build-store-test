@@ -13,6 +13,8 @@ import { ZodError } from "zod";
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -41,6 +43,8 @@ const Register = () => {
   const signup = async ()=>{
     try{
       if(validateForm()?.success){
+        setLoading(true);
+
         const {data, error} = await
         supabase.auth.signUp({
           email,
@@ -59,6 +63,8 @@ const Register = () => {
       
     }catch(e){
       console.log(e);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -68,7 +74,7 @@ const Register = () => {
         <h2 className="text-3xl text-dark font-bold">Register Page</h2>
         <Input onChange={(e)=>setEmail(e.target.value)} placeholder="email" value={email}/>
         <Input onChange={(e)=>setPassword(e.target.value)} placeholder="password" type="password" value={password}/>
-        <Button className="bg-primary text-white text-xl hover:font-bold hover:bg-[#ff5353]" onClick={signup}>Sign Up</Button>
+        <Button className="bg-primary text-white text-xl hover:font-bold hover:bg-[#ff5353]" onClick={signup}>{loading?"Loading..":"Sign Up"}</Button>
         <p className="text-xl text-dark">or <Link className="text-2xl font-bold hover:text-dark/90 transition-all duration-300" href='login' >Sign In</Link></p>
 
       </div>
